@@ -16,6 +16,9 @@ app.use('/api/v1/roles', require('./api/v1/roles.routes'))
 app.use('/api/v1/states', require('./api/v1/states.routes'))
 app.use('/api/v1/serviceTypes', require('./api/v1/serviceTypes.routes'))
 app.use('/api/v1/eventTypes', require('./api/v1/eventTypes.routes'))
+app.use('/api/v1/services', require('./api/v1/services.routes'))
+
+
 
 // Rutas del API
 // app.get('/', (req, resp)=> {

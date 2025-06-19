@@ -25,7 +25,6 @@ const createServiceTypes = async (req, res) => {
         res.status(400).send({ "status": "FAILED", "message": "Error al tarer usuario" });
 }
 
-
 const updateServiceTypes = async (req, res) => {
     let id = req.params.id;
     let { serviceType } = req.body;
