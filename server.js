@@ -14,11 +14,10 @@ app.use(bodyParser.json()); // Permite recibir solicitudes JSON
 app.use('/api/v1/users', require('./api/v1/user.routes'))
 app.use('/api/v1/roles', require('./api/v1/roles.routes'))
 app.use('/api/v1/states', require('./api/v1/states.routes'))
-<<<<<<< HEAD
 app.use('/api/v1/serviceTypes', require('./api/v1/serviceTypes.routes'))
-=======
 app.use('/api/v1/eventTypes', require('./api/v1/eventTypes.routes'))
->>>>>>> 6c5488a7a0efdd6cdb88afc9980f67af28251635
+app.use('/api/v1/services', require('./api/v1/services.routes'))
+
 
 // Rutas del API
 // app.get('/', (req, resp)=> {
