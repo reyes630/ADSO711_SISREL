@@ -17,6 +17,7 @@ app.use('/api/v1/states', require('./api/v1/states.routes'))
 app.use('/api/v1/serviceTypes', require('./api/v1/serviceTypes.routes'))
 app.use('/api/v1/eventTypes', require('./api/v1/eventTypes.routes'))
 app.use('/api/v1/services', require('./api/v1/services.routes'))
+app.use('/api/v1/client', require('./api/v1/client.routes'))
 
 
 
