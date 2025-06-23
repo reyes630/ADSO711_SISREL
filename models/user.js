@@ -11,6 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      user.hasMany(models.request); // Un usuario tiene muchas solicitudes
+      models.request.belongsTo(user); // Una solicitud pertenece a un usuario
     }
   }
   user.init({

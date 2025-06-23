@@ -11,6 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      serviceType.hasMany(models.request); // Un tipo de servicio tiene muchas solicitudes
+      models.request.belongsTo(serviceType); // Una solicitud pertenece a un tipo de servicio
     }
   }
   serviceType.init({

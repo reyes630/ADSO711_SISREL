@@ -24,6 +24,17 @@ module.exports = {
       passwordUser: {
         type: Sequelize.STRING
       },
+      // Rol
+      FKroles: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Roles',
+          key: 'id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'RESTRICT'
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

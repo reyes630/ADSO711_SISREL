@@ -10,7 +10,8 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      service.hasMany(models.servicetype); // Un servicio tiene muchos tipos de servicio
+      models.servicetype.belongsTo(service); // Un tipo de servicio tiene un servicio
     }
   }
   service.init({

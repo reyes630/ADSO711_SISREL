@@ -12,6 +12,17 @@ module.exports = {
       serviceType: {
         type: Sequelize.STRING
       },
+      // Servicio
+      FKservices: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Services',
+          key: 'id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'RESTRICT'
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

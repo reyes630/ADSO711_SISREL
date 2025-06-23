@@ -55,6 +55,39 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'RESTRICT'
       },
+      // Cliente
+      FKclients: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Clients',
+          key: 'id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'RESTRICT'
+      },
+      // Usuario
+      FKusers: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Users',
+          key: 'id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'RESTRICT'
+      },
+      // Tipo servicio
+      FKservicetypes: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Servicetypes',
+          key: 'id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'RESTRICT'
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
