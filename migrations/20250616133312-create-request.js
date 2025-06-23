@@ -33,6 +33,28 @@ module.exports = {
       assignment: {
         type: Sequelize.STRING
       },
+      // Estado
+      FKstates: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'States',  // Nombre exacto de la tabla 
+          key: 'id'   // Llave primaria real en la tabla `states`
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'RESTRICT'
+      },
+      // Tipo de evento
+      FKeventtypes: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Eventtypes',
+          key: 'id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'RESTRICT'
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

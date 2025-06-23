@@ -3,6 +3,11 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const app = express();
 
+if (process.env.NODE_ENV !== 'production') {
+    // Cargamos las variables de entono
+    require('dotenv').config();
+}
+
 app.set('port', process.env.PORT || 4000);
 
 app.use(morgan('dev'));

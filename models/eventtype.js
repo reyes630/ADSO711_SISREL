@@ -11,6 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      eventType.hasMany(models.request); // Un tipo evento tiene muchas solicitudes
+      models.request.belongsTo(eventType); // Una solicitud pertenece a un tipo evento
     }
   }
   eventType.init({

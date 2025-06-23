@@ -11,6 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      State.hasMany(models.request); // Un estado tiene muchas solicitudes
+      models.request.belongsTo(State); // Una solicitud pertenece a un estado
     }
   }
   State.init({
