@@ -18,16 +18,18 @@ const getOneServiceTypes = async (id) => {
     }
 };
 
-const createServiceTypes = async (serviceType) => {
+const createServiceTypes = async ({ serviceType, FKservices }) => {
     try {
         let newserviceType = await db.serviceType.create({
             serviceType,
+            FKservices
         });
         return newserviceType;
     } catch (error) {
-        throw new Error(`Error al traer el rol: ${error.message}`);
+        throw new Error(`Error al crear el tipo de servicio: ${error.message}`);
     }
 };
+
 
 const updateServiceTypes = async (id, serviceType) => {
     try {

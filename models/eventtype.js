@@ -10,9 +10,15 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
-      eventType.hasMany(models.request); // Un tipo evento tiene muchas solicitudes
-      models.request.belongsTo(eventType); // Una solicitud pertenece a un tipo evento
+      // Un tipo de evento tiene muchas solicitudes
+      eventType.hasMany(models.request, {
+        foreignKey: 'FKeventtypes'
+      });
+
+      // Una solicitud pertenece a un tipo de evento
+      models.request.belongsTo(eventType, {
+        foreignKey: 'FKeventtypes'
+      });
     }
   }
   eventType.init({

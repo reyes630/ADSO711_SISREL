@@ -19,11 +19,12 @@ const getOneStates = async (id) => {
     }
 };
 
-const createState = async (State, Description) => {
+const createState = async (State, Description, color) => {
     try {
         let newState = await db.State.create({
             State,
             Description,
+            color,
         });
         return newState;
     } catch (error) {
@@ -31,11 +32,12 @@ const createState = async (State, Description) => {
     }
 };
 
-const updateState = async (id, State, Description) => {
+const updateState = async (id, State, Description, color) => {
     try {
-        await db.user.update({
+        await db.State.update({
             State,
             Description,
+            color,
         }, {
             where: { id },
         });

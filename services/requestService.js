@@ -18,7 +18,7 @@ const getOnerequest = async (id) => {
     }
 };
 
-const createrequest = async (eventDate, location, municipality, observations, comments, requestMethod, needDescription, assignment) => {
+const createrequest = async (eventDate, location, municipality, observations, comments, requestMethod, needDescription, assignment, FKstates, FKeventtypes, FKclients, FKusers, FKservicetypes) => {
     try {
         let newrequest = await db.request.create({
             eventDate,
@@ -29,6 +29,11 @@ const createrequest = async (eventDate, location, municipality, observations, co
             requestMethod,
             needDescription,
             assignment,
+            FKstates,        
+            FKeventtypes,
+            FKclients,
+            FKusers,
+            FKservicetypes
         });
         return newrequest;
     } catch (error) {
@@ -36,7 +41,8 @@ const createrequest = async (eventDate, location, municipality, observations, co
     }
 };
 
-const updaterequest = async (id, eventDate, location, municipality, observations, comments, requestMethod, needDescription, assignment) => {
+
+const updaterequest = async (id, eventDate, location, municipality, observations, comments, requestMethod, needDescription, assignment, FKstates, FKeventtypes, FKclients, FKusers, FKservicetypes) => {
     try {
         await db.request.update({
             eventDate,
@@ -47,6 +53,11 @@ const updaterequest = async (id, eventDate, location, municipality, observations
             requestMethod,
             needDescription,
             assignment,
+            FKstates, 
+            FKeventtypes, 
+            FKclients, 
+            FKusers, 
+            FKservicetypes
         }, {
             where: { id },
         });

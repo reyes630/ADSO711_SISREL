@@ -10,14 +10,14 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      role.hasMany(models.user); // Un rol tiene muchas usuarios
-      models.user.belongsTo(rol); // Un Usuario tiene un rol
+    role.hasMany(models.user, { foreignKey: 'FKroles' });   
+    models.user.belongsTo(role, { foreignKey: 'FKroles' });
     }
   }
   role.init({
     Role: DataTypes.STRING
   }, {
-    sequelize,
+    sequelize,  
     modelName: 'role',
   });
   return role;

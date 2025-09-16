@@ -18,17 +18,19 @@ const getOnerequest = async (req, res) => {
 
 const createrequest = async (req, res) => {
     const { body } = req;
-    const createdrequest = await request_service.createrequest(body.eventDate, body.location, body.municipality, body.observations, body.comments, body.requestMethod, body.needDescription, body.assignment );
+    const createdrequest = await request_service.createrequest(body.eventDate,body.location,body.municipality,body.observations,body.comments,body.requestMethod,body.needDescription,body.assignment,body.FKstates,body.FKeventtypes,body.FKclients,body.FKusers,body.FKservicetypes
+    );
     if (createdrequest)
-        res.status(200).send({ "status": "OK", "message": "Solicitud", "data": createdrequest });
+        res.status(200).send({ "status": "OK", "message": "Solicitud creada", "data": createdrequest });
     else
         res.status(400).send({ "status": "FAILED", "message": "Error al crear la solicitud" });
-}
+};
+
 
 const updaterequest = async (req, res) => {
     let id = req.params.id;
-    let { eventDate, location, municipality, observations, comments, requestMethod, needDescription, assignment } = req.body;
-    const updatedrequest = await request_service.updaterequest( id, eventDate, location, municipality, observations, comments, requestMethod, needDescription, assignment );
+    let { eventDate, location, municipality, observations, comments, requestMethod, needDescription, assignment, FKstates, FKeventtypes,FKclients, FKusers, FKservicetypes } = req.body;
+    const updatedrequest = await request_service.updaterequest( id, eventDate, location, municipality, observations, comments, requestMethod, needDescription, assignment, FKstates, FKeventtypes,FKclients, FKusers, FKservicetypes  );
     if (updatedrequest)
         res.status(200).send({ "status": "OK", "message": "Solicitud actualizado", "data": updatedrequest });
     else

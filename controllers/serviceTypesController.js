@@ -18,12 +18,13 @@ const getOneServiceTypes = async (req, res) => {
 
 const createServiceTypes = async (req, res) => {
     const { body } = req;
-    const createdServiceType = await serviceTypes_service.createServiceTypes(body.serviceType);
+    const createdServiceType = await serviceTypes_service.createServiceTypes({serviceType: body.serviceType,FKservices: body.FKservices});
     if (createdServiceType)
-        res.status(200).send({ "status": "OK", "message": "Rol", "data": createdServiceType });
+        res.status(200).send({ "status": "OK", "message": "Tipo de servicio creado", "data": createdServiceType });
     else
-        res.status(400).send({ "status": "FAILED", "message": "Error al tarer usuario" });
+        res.status(400).send({ "status": "FAILED", "message": "Error al crear el tipo de servicio" });
 }
+
 
 const updateServiceTypes = async (req, res) => {
     let id = req.params.id;

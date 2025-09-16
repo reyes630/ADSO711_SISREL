@@ -1,25 +1,30 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class serviceType extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
-      // define association here
-      serviceType.hasMany(models.request); // Un tipo de servicio tiene muchas solicitudes
-      models.request.belongsTo(serviceType); // Una solicitud pertenece a un tipo de servicio
+      // Un tipo de servicio tiene muchas solicitudes
+      serviceType.hasMany(models.request, {
+        foreignKey: 'FKservicetypes'
+      });
+      models.request.belongsTo(serviceType, {
+        foreignKey: 'FKservicetypes'
+      });
+
+      // Un tipo de servicio pertenece a un servicio
+      serviceType.belongsTo(models.service, {
+        foreignKey: 'FKservices'
+      });
     }
   }
+
   serviceType.init({
     serviceType: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'serviceType',
   });
+
   return serviceType;
 };

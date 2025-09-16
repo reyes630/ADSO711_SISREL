@@ -18,7 +18,7 @@ const getOneStates = async (req, res) => {
 
 const createState = async (req, res) => {
     const { body } = req;
-    const createdState = await states_service.createState(body.State, body.Description);
+    const createdState = await states_service.createState(body.State, body.Description, body.color);
     if (createdState)
         res.status(200).send({ "status": "OK", "message": "Estado", "data": createdState });
     else
@@ -27,8 +27,8 @@ const createState = async (req, res) => {
 
 const updateState = async (req, res) => {
     let id = req.params.id;
-    let { State, Description } = req.body;
-    const updatedState = await states_service.updateState(id, State, Description);
+    let { State, Description, color } = req.body;
+    const updatedState = await states_service.updateState(id, State, Description, color);
     if (updatedState)
         res.status(200).send({ "status": "OK", "message": "Usuario actualizado", "data": updatedState });
     else
