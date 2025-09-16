@@ -41,7 +41,7 @@ const createrequest = async (eventDate, location, municipality, observations, co
     }
 };
 
-
+// Update request
 const updaterequest = async (id, eventDate, location, municipality, observations, comments, requestMethod, needDescription, assignment, FKstates, FKeventtypes, FKclients, FKusers, FKservicetypes) => {
     try {
         await db.request.update({
