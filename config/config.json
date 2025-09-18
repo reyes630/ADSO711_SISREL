@@ -14,10 +14,16 @@
     "dialect": "mysql"
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production_sisrel",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
+    "username": "miguelj24",
+    "password": "H1TODjBvvochExvzhMGYM6d4kdnz0TIV",
+    "database": "db_sisrel",
+    "host": "dpg-d35m9hndiees738e619g-a",
+    "dialect": "postgres",
+    "dialecOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false
+      }   
+    }
   }
 }
