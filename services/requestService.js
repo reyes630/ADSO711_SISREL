@@ -18,7 +18,7 @@ const getOnerequest = async (id) => {
     }
 };
 
-const createrequest = async (eventDate, location, municipality, observations, comments, requestMethod, needDescription, assignment, FKstates, FKeventtypes, FKclients, FKusers, FKservicetypes) => {
+const createrequest = async (eventDate, location, municipality, observations, comments, requestMethod, needDescription, assignment, FKstates, FKeventtypes, FKclients, FKusers, FKservicetypes, archive_status) => {
     try {
         let newrequest = await db.request.create({
             eventDate,
@@ -33,7 +33,8 @@ const createrequest = async (eventDate, location, municipality, observations, co
             FKeventtypes,
             FKclients,
             FKusers,
-            FKservicetypes
+            FKservicetypes,
+            archive_status
         });
         return newrequest;
     } catch (error) {
@@ -41,8 +42,7 @@ const createrequest = async (eventDate, location, municipality, observations, co
     }
 };
 
-// Update request
-const updaterequest = async (id, eventDate, location, municipality, observations, comments, requestMethod, needDescription, assignment, FKstates, FKeventtypes, FKclients, FKusers, FKservicetypes) => {
+const updaterequest = async (id, eventDate, location, municipality, observations, comments, requestMethod, needDescription, assignment, FKstates, FKeventtypes, FKclients, FKusers, FKservicetypes, archive_status) => {
     try {
         await db.request.update({
             eventDate,
@@ -57,11 +57,12 @@ const updaterequest = async (id, eventDate, location, municipality, observations
             FKeventtypes, 
             FKclients, 
             FKusers, 
-            FKservicetypes
+            FKservicetypes,
+            archive_status
         }, {
             where: { id },
         });
-        return await db.request.findByPk(id); // Obtener la solicitud actualizado
+        return await db.request.findByPk(id);
     } catch (error) {
         throw new Error(`Error al actualizar la solicitud: ${error.message}`);
     }
@@ -69,11 +70,8 @@ const updaterequest = async (id, eventDate, location, municipality, observations
 
 const deleterequest = async (id) => {
     try {
-        console.log(id)
         const deletedrequest = await db.request.destroy({
-            where: {
-                id,
-            }
+            where: { id }
         });
         return deletedrequest;
     } catch (error) {
