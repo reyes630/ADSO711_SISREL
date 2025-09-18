@@ -38,8 +38,8 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'States',  // Nombre exacto de la tabla 
-          key: 'id'   // Llave primaria real en la tabla `states`
+          model: 'states',
+          key: 'id'
         },
         onUpdate: 'CASCADE',
         onDelete: 'RESTRICT'
@@ -49,7 +49,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Eventtypes',
+          model: 'eventtypes',
           key: 'id'
         },
         onUpdate: 'CASCADE',
@@ -60,7 +60,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Clients',
+          model: 'clients',
           key: 'id'
         },
         onUpdate: 'CASCADE',
@@ -71,7 +71,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Users',
+          model: 'users',
           key: 'id'
         },
         onUpdate: 'CASCADE',
@@ -82,7 +82,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Servicetypes',
+          model: 'servicetypes',
           key: 'id'
         },
         onUpdate: 'CASCADE',
