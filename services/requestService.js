@@ -1,45 +1,66 @@
 const db = require('../models');
 
 const getAllrequest = async () => {
-    try {
-        const request = await db.request.findAll({
-            include: [
-                {
-                    model: db.Client,
-                    attributes: ['id', 'NameClient']
-                },
-                {
-                    model: db.State,
-                    attributes: ["id", "State", "color", "Description"]
-                }
-            ]
-        });
-        return request;
-    } catch (error) {
-        throw new Error(`Error al traer las solicitudes: ${error.message}`);
-    }
+  try {
+    const request = await db.request.findAll({
+      include: [
+        {
+          model: db.Client,
+          attributes: ['id', 'NameClient']
+        },
+        {
+          model: db.State,
+          attributes: ["id", "State", "color", "Description"]
+        },
+        {
+          model: db.serviceType,
+          attributes: ['id', 'serviceType'], // <-- este sí es de serviceType
+          include: [
+            {
+              model: db.service,
+              attributes: ['id', 'service', 'color'] // <-- esto viene de service
+            }
+          ]
+        }
+      ]
+    });
+    return request;
+  } catch (error) {
+    throw new Error(`Error al traer las solicitudes: ${error.message}`);
+  }
 };
 
 
 const getOnerequest = async (id) => {
-    try {
-        const request = await db.request.findByPk(id, {
-            include: [
-                {
-                    model: db.Client,
-                    attributes: ['id', 'NameClient']
-                },
-                {
-                    model: db.State,
-                    attributes: ["id", "State", "color", "Description"]
-                }
-            ]
-        });
-        return request;
-    } catch (error) {
-        throw new Error(`Error al traer la solicitud: ${error.message}`);
-    }
+  try {
+    const request = await db.request.findByPk(id, {
+      include: [
+        {
+          model: db.Client,
+          attributes: ['id', 'NameClient']
+        },
+        {
+          model: db.State,
+          attributes: ["id", "State", "color", "Description"]
+        },
+        {
+          model: db.serviceType,
+          attributes: ['id', 'serviceType'],
+          include: [
+            {
+              model: db.service,
+              attributes: ['id', 'service', 'color']
+            }
+          ]
+        }
+      ]
+    });
+    return request;
+  } catch (error) {
+    throw new Error(`Error al traer la solicitud: ${error.message}`);
+  }
 };
+
 
 
 const createrequest = async (eventDate, location, municipality, observations, comments, requestMethod, needDescription, assignment, FKstates, FKeventtypes, FKclients, FKusers, FKservicetypes, archive_status) => {
