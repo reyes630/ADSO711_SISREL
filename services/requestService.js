@@ -5,8 +5,12 @@ const getAllrequest = async () => {
         const request = await db.request.findAll({
             include: [
                 {
-                    model: db.Client,   
-                    attributes: ['id', 'NameClient'] 
+                    model: db.Client,
+                    attributes: ['id', 'NameClient']
+                },
+                {
+                    model: db.State,
+                    attributes: ["id", "State", "color", "Description"]
                 }
             ]
         });
@@ -16,6 +20,7 @@ const getAllrequest = async () => {
     }
 };
 
+
 const getOnerequest = async (id) => {
     try {
         const request = await db.request.findByPk(id, {
@@ -23,6 +28,10 @@ const getOnerequest = async (id) => {
                 {
                     model: db.Client,
                     attributes: ['id', 'NameClient']
+                },
+                {
+                    model: db.State,
+                    attributes: ["id", "State", "color", "Description"]
                 }
             ]
         });
@@ -31,6 +40,7 @@ const getOnerequest = async (id) => {
         throw new Error(`Error al traer la solicitud: ${error.message}`);
     }
 };
+
 
 const createrequest = async (eventDate, location, municipality, observations, comments, requestMethod, needDescription, assignment, FKstates, FKeventtypes, FKclients, FKusers, FKservicetypes, archive_status) => {
     try {
@@ -43,7 +53,7 @@ const createrequest = async (eventDate, location, municipality, observations, co
             requestMethod,
             needDescription,
             assignment,
-            FKstates,        
+            FKstates,
             FKeventtypes,
             FKclients,
             FKusers,
@@ -67,10 +77,10 @@ const updaterequest = async (id, eventDate, location, municipality, observations
             requestMethod,
             needDescription,
             assignment,
-            FKstates, 
-            FKeventtypes, 
-            FKclients, 
-            FKusers, 
+            FKstates,
+            FKeventtypes,
+            FKclients,
+            FKusers,
             FKservicetypes,
             archive_status
         }, {
