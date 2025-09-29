@@ -16,6 +16,7 @@ app.use(bodyParser.urlencoded({ extended: false}));
 app.use(bodyParser.json()); // Permite recibir solicitudes JSON
 
 // Routes
+app.use('/api/v1/auth', require('./api/v1/auth.routes'));
 app.use('/api/v1/users', require('./api/v1/user.routes'))
 app.use('/api/v1/roles', require('./api/v1/roles.routes'))
 app.use('/api/v1/states', require('./api/v1/states.routes'))
@@ -24,6 +25,7 @@ app.use('/api/v1/eventTypes', require('./api/v1/eventTypes.routes'))
 app.use('/api/v1/services', require('./api/v1/services.routes'))
 app.use('/api/v1/client', require('./api/v1/client.routes'))
 app.use('/api/v1/request', require('./api/v1/request.routes'))
+
 
 
 
