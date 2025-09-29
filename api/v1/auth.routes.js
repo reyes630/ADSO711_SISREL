@@ -1,6 +1,6 @@
-const express = require('express');
-const router = express.Router();
-const authService = require('../services/authService');
+const { Router } = require('express');
+const router = Router();
+const authService = require('../../services/authService');
 
 /**
  * @route   POST /api/v1/auth/login
@@ -13,8 +13,8 @@ router.post('/login', async (req, res) => {
 
         // Validar que vengan los datos
         if (!email || !password) {
-            return res.status(400).json({
-                success: false,
+            return res.status(400).send({
+                status: "FAILED",
                 message: 'Por favor proporcione email y contraseña'
             });
         }
@@ -23,15 +23,15 @@ router.post('/login', async (req, res) => {
         const result = await authService.login(email, password);
 
         if (!result.success) {
-            return res.status(401).json({
-                success: false,
+            return res.status(401).send({
+                status: "FAILED",
                 message: result.message
             });
         }
 
         // Login exitoso
-        res.status(200).json({
-            success: true,
+        res.status(200).send({
+            status: "OK",
             message: 'Login exitoso',
             data: {
                 token: result.token,
@@ -41,8 +41,8 @@ router.post('/login', async (req, res) => {
 
     } catch (error) {
         console.error('Error en login:', error);
-        res.status(500).json({
-            success: false,
+        res.status(500).send({
+            status: "FAILED",
             message: 'Error en el servidor',
             error: error.message
         });
@@ -56,28 +56,29 @@ router.post('/login', async (req, res) => {
  */
 router.post('/register', async (req, res) => {
     try {
-        const { name, email, password, roleId } = req.body;
+        const { documentUser, nameUser, emailUser, telephoneUser, passwordUser, FKroles } = req.body;
 
         // Validar datos requeridos
-        if (!name || !email || !password) {
-            return res.status(400).json({
-                success: false,
-                message: 'Por favor proporcione nombre, email y contraseña'
+        if (!nameUser || !emailUser || !passwordUser) {
+            return res.status(400).send({
+                status: "FAILED",
+                message: 'Por favor proporcione nombre, email y contraseña',
+                received: req.body // Para debug
             });
         }
 
         // Registrar usuario
-        const result = await authService.register(name, email, password, roleId);
+        const result = await authService.register(documentUser, nameUser, emailUser, telephoneUser, passwordUser, FKroles);
 
         if (!result.success) {
-            return res.status(400).json({
-                success: false,
+            return res.status(400).send({
+                status: "FAILED",
                 message: result.message
             });
         }
 
-        res.status(201).json({
-            success: true,
+        res.status(201).send({
+            status: "OK",
             message: 'Usuario registrado exitosamente',
             data: {
                 token: result.token,
@@ -87,8 +88,8 @@ router.post('/register', async (req, res) => {
 
     } catch (error) {
         console.error('Error en registro:', error);
-        res.status(500).json({
-            success: false,
+        res.status(500).send({
+            status: "FAILED",
             message: 'Error en el servidor',
             error: error.message
         });
@@ -103,17 +104,19 @@ router.post('/register', async (req, res) => {
 router.get('/me', authService.authenticate, async (req, res) => {
     try {
         // El usuario viene del middleware authenticate
-        res.status(200).json({
-            success: true,
+        res.status(200).send({
+            status: "OK",
+            message: "Usuario actual",
             data: req.user
         });
     } catch (error) {
         console.error('Error al obtener usuario:', error);
-        res.status(500).json({
-            success: false,
+        res.status(500).send({
+            status: "FAILED",
             message: 'Error en el servidor'
         });
     }
 });
 
+// Exportar el modulo
 module.exports = router;
