@@ -2,7 +2,14 @@ const db = require('../models');
 
 const getAllrequest = async () => {
     try {
-        const request = await db.request.findAll();
+        const request = await db.request.findAll({
+            include: [
+                {
+                    model: db.Client,   
+                    attributes: ['id', 'NameClient'] 
+                }
+            ]
+        });
         return request;
     } catch (error) {
         throw new Error(`Error al traer las solicitudes: ${error.message}`);
@@ -11,7 +18,14 @@ const getAllrequest = async () => {
 
 const getOnerequest = async (id) => {
     try {
-        const request = await db.request.findByPk(id);
+        const request = await db.request.findByPk(id, {
+            include: [
+                {
+                    model: db.Client,
+                    attributes: ['id', 'NameClient']
+                }
+            ]
+        });
         return request;
     } catch (error) {
         throw new Error(`Error al traer la solicitud: ${error.message}`);
