@@ -50,7 +50,8 @@ class AuthService {
                 emailUser: user.emailUser,
                 telephoneUser: user.telephoneUser,
                 FKroles: user.FKroles,
-                role: user.role
+                role: user.role,
+                coordinator: user.coordinator
             };
 
             return {
@@ -92,7 +93,8 @@ class AuthService {
                 emailUser,
                 telephoneUser,
                 passwordUser: hashedPassword,
-                FKroles: FKroles || 1 // Rol por defecto (ajustar según tu BD)
+                FKroles: FKroles || 1, // Rol por defecto (ajustar según tu BD)
+                coordinator: 0
             });
 
             // Generar token
@@ -105,7 +107,8 @@ class AuthService {
                 nameUser: newUser.nameUser,
                 emailUser: newUser.emailUser,
                 telephoneUser: newUser.telephoneUser,
-                FKroles: newUser.FKroles
+                FKroles: newUser.FKroles,
+                coordinator: newUser.coordinator
             };
 
             return {
