@@ -36,7 +36,7 @@ const getOneUser = async (req, res) => {
 const createUser = async (req, res) => {
     try {
         const { body } = req;
-        const createdUser = await user_service.createUser(body.documentUser, body.nameUser, body.emailUser, body.telephoneUser, body.passwordUser, body.FKroles);
+        const createdUser = await user_service.createUser(body.documentUser, body.nameUser, body.emailUser, body.telephoneUser, body.passwordUser, body.FKroles, body.coordinator);
         if (createdUser)
             res.status(200).send({ "status": "OK", "message": "usuario", "data": createdUser });
         else
@@ -50,7 +50,7 @@ const updateUser = async (req, res) => {
     try {
         let id = req.params.id;
         let { documentUser, nameUser, emailUser, telephoneUser, passwordUser, FKroles } = req.body;
-        const updatedUser = await user_service.updateUser(id, documentUser, nameUser, emailUser, telephoneUser, passwordUser, FKroles);
+        const updatedUser = await user_service.updateUser(id, documentUser, nameUser, emailUser, telephoneUser, passwordUser, FKroles, coordinator);
         if (updatedUser)
             res.status(200).send({ "status": "OK", "message": "Usuario actualizado", "data": updatedUser });
         else

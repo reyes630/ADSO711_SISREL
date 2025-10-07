@@ -20,7 +20,7 @@ const getOneUser = async (id) => {
     }
 };
 
-const createUser = async (documentUser, nameUser, emailUser, telephoneUser, passwordUser, FKroles) => {
+const createUser = async (documentUser, nameUser, emailUser, telephoneUser, passwordUser, FKroles, coordinator) => {
     try {
         // Encriptar la contraseña
         const hashedPassword = await bcrypt.hash(passwordUser, saltRounds);
@@ -31,7 +31,8 @@ const createUser = async (documentUser, nameUser, emailUser, telephoneUser, pass
             emailUser,
             telephoneUser,
             passwordUser: hashedPassword, // Guardar la contraseña encriptada
-            FKroles
+            FKroles,
+            coordinator
         });
         return newUser;
     } catch (error) {
@@ -39,14 +40,15 @@ const createUser = async (documentUser, nameUser, emailUser, telephoneUser, pass
     }
 };
 
-const updateUser = async (id, documentUser, nameUser, emailUser, telephoneUser, passwordUser, FKroles) => {
+const updateUser = async (id, documentUser, nameUser, emailUser, telephoneUser, passwordUser, FKroles, coordinator ) => {
     try {
         const updateData = {
             documentUser,
             nameUser,
             emailUser,
             telephoneUser,
-            FKroles
+            FKroles,
+            coordinator
         };
 
         // Solo actualizar la contraseña si se proporciona una nueva
