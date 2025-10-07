@@ -10,17 +10,21 @@ const getAllrequest = async () => {
         },
         {
           model: db.State,
-          attributes: ["id", "State", "color", "Description"]
+          attributes: ['id', 'State', 'color', 'Description']
         },
         {
           model: db.serviceType,
-          attributes: ['id', 'serviceType'], // <-- este sí es de serviceType
+          attributes: ['id', 'serviceType'],
           include: [
             {
               model: db.service,
-              attributes: ['id', 'service', 'color'] // <-- esto viene de service
+              attributes: ['id', 'service', 'color']
             }
           ]
+        },
+        {
+          model: db.user, 
+          attributes: ['id', 'nameUser', 'emailUser']
         }
       ]
     });
@@ -29,7 +33,6 @@ const getAllrequest = async () => {
     throw new Error(`Error al traer las solicitudes: ${error.message}`);
   }
 };
-
 
 const getOnerequest = async (id) => {
   try {
@@ -41,7 +44,7 @@ const getOnerequest = async (id) => {
         },
         {
           model: db.State,
-          attributes: ["id", "State", "color", "Description"]
+          attributes: ['id', 'State', 'color', 'Description']
         },
         {
           model: db.serviceType,
@@ -52,6 +55,10 @@ const getOnerequest = async (id) => {
               attributes: ['id', 'service', 'color']
             }
           ]
+        },
+        {
+          model: db.user, 
+          attributes: ['id', 'nameUser', 'emailUser']
         }
       ]
     });
