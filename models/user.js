@@ -31,7 +31,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    coordinator
+      coordinator: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false, // Por defecto no es coordinador
+    }
   }, {
     sequelize,
     modelName: 'user',
