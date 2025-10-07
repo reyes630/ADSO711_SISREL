@@ -15,8 +15,8 @@ module.exports = (sequelize, DataTypes) => {
       });
 
       // Un usuario pertenece a un rol
-      user.belongsTo(models.role, { 
-        foreignKey: 'FKroles' 
+      user.belongsTo(models.role, {
+        foreignKey: 'FKroles'
       });
     }
   }
@@ -31,9 +31,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-      coordinator: {
+    coordinator: {
       type: DataTypes.BOOLEAN,
-      defaultValue: false, // Por defecto no es coordinador
+      allowNull: false,
+      defaultValue: false
     }
   }, {
     sequelize,
