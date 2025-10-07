@@ -30,7 +30,8 @@ module.exports = (sequelize, DataTypes) => {
     FKroles: {
       type: DataTypes.INTEGER,
       allowNull: false
-    }
+    },
+    coordinator
   }, {
     sequelize,
     modelName: 'user',
