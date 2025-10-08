@@ -253,6 +253,7 @@ class AuthService {
 
 
 
+    // 📧 CONFIGURACIÓN DE NODEMAILER - Fragmento a actualizar
     async forgotPassword(email) {
         try {
             const user = await db.user.findOne({ where: { emailUser: email } });
@@ -274,11 +275,11 @@ class AuthService {
             let transporter;
 
             if (process.env.EMAIL_SERVICE === 'gmail') {
-                // Configuración para Gmail
+                // Configuración para Gmail - Usa puerto 465 para mejor compatibilidad en hosting
                 transporter = nodemailer.createTransport({
                     host: 'smtp.gmail.com',
-                    port: 587,
-                    secure: false, // true para puerto 465, false para 587
+                    port: 465,
+                    secure: true, // true para puerto 465
                     auth: {
                         user: process.env.EMAIL_USER,
                         pass: process.env.EMAIL_PASS, // Contraseña de app, no la normal
@@ -299,17 +300,19 @@ class AuthService {
                 // Configuración para SendGrid
                 transporter = nodemailer.createTransport({
                     host: 'smtp.sendgrid.net',
-                    port: 587,
-                    secure: false,
+                    port: 465,
+                    secure: true,
                     auth: {
                         user: 'apikey',
                         pass: process.env.EMAIL_PASS,
                     },
                 });
             } else {
-                // Fallback: Configuración por defecto
+                // Fallback: Gmail por defecto
                 transporter = nodemailer.createTransport({
-                    service: process.env.EMAIL_SERVICE || 'gmail',
+                    host: 'smtp.gmail.com',
+                    port: 465,
+                    secure: true,
                     auth: {
                         user: process.env.EMAIL_USER,
                         pass: process.env.EMAIL_PASS,
