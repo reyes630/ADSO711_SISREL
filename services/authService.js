@@ -252,6 +252,7 @@ class AuthService {
     }
 
 
+
     async forgotPassword(email) {
         try {
             const user = await db.user.findOne({ where: { emailUser: email } });
@@ -269,14 +270,52 @@ class AuthService {
                 resetPasswordExpires: tokenExpiration,
             });
 
-            // ✅ Configurar transporte de correo
-            const transporter = nodemailer.createTransport({
-                service: process.env.EMAIL_SERVICE,
-                auth: {
-                    user: process.env.EMAIL_USER,
-                    pass: process.env.EMAIL_PASS,
-                },
-            });
+            // ✅ CONFIGURACIÓN CORRECTA DE NODEMAILER
+            let transporter;
+
+            if (process.env.EMAIL_SERVICE === 'gmail') {
+                // Configuración para Gmail
+                transporter = nodemailer.createTransport({
+                    host: 'smtp.gmail.com',
+                    port: 587,
+                    secure: false, // true para puerto 465, false para 587
+                    auth: {
+                        user: process.env.EMAIL_USER,
+                        pass: process.env.EMAIL_PASS, // Contraseña de app, no la normal
+                    },
+                });
+            } else if (process.env.EMAIL_SERVICE === 'mailtrap') {
+                // Configuración para Mailtrap
+                transporter = nodemailer.createTransport({
+                    host: 'smtp.mailtrap.io',
+                    port: 465,
+                    secure: true,
+                    auth: {
+                        user: process.env.EMAIL_USER,
+                        pass: process.env.EMAIL_PASS,
+                    },
+                });
+            } else if (process.env.EMAIL_SERVICE === 'SendGrid') {
+                // Configuración para SendGrid
+                transporter = nodemailer.createTransport({
+                    host: 'smtp.sendgrid.net',
+                    port: 587,
+                    secure: false,
+                    auth: {
+                        user: 'apikey',
+                        pass: process.env.EMAIL_PASS,
+                    },
+                });
+            } else {
+                // Fallback: Configuración por defecto
+                transporter = nodemailer.createTransport({
+                    service: process.env.EMAIL_SERVICE || 'gmail',
+                    auth: {
+                        user: process.env.EMAIL_USER,
+                        pass: process.env.EMAIL_PASS,
+                    },
+                });
+            }
 
             // ✅ Plantilla HTML elegante
             const htmlContent = `
@@ -414,19 +453,30 @@ class AuthService {
   </div>
 </body>
 </html>
-    `;
+        `;
 
-            // ✅ Enviar correo
-            await transporter.sendMail({
-                from: `"SISREL" <${process.env.EMAIL_USER}>`,
-                to: user.emailUser,
-                subject: "Código de Recuperación de Contraseña",
-                html: htmlContent,
-            });
+            // ✅ Enviar correo con manejo de errores
+            try {
+                await transporter.sendMail({
+                    from: `"SISREL" <${process.env.EMAIL_USER}>`,
+                    to: user.emailUser,
+                    subject: "Código de Recuperación de Contraseña",
+                    html: htmlContent,
+                });
+                console.log('✅ Correo enviado a:', user.emailUser);
+            } catch (emailError) {
+                console.error('❌ Error al enviar correo:', emailError);
+                // Limpiar el token si no se pudo enviar el correo
+                await user.update({
+                    resetPasswordToken: null,
+                    resetPasswordExpires: null,
+                });
+                throw new Error(`No se pudo enviar el correo: ${emailError.message}`);
+            }
 
             return { success: true };
         } catch (error) {
-            console.error("Error en forgotPassword:", error);
+            console.error("❌ Error en forgotPassword:", error);
             throw error;
         }
     }
