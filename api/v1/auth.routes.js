@@ -118,5 +118,103 @@ router.get('/me', authService.authenticate, async (req, res) => {
     }
 });
 
+/**
+ * @route   POST /api/v1/auth/forgot-password
+ * @desc    Enviar código de verificación por correo
+ * @access  Public
+ */
+router.post('/forgot-password', async (req, res) => {
+    try {
+        const { email } = req.body;
+        const result = await authService.forgotPassword(email);
+
+        if (!result.success) {
+            return res.status(404).send({
+                status: "FAILED",
+                message: "No se encontró una cuenta con ese correo"
+            });
+        }
+
+        res.status(200).send({
+            status: "OK",
+            message: "Código de verificación enviado al correo"
+        });
+    } catch (error) {
+        console.error('Error en forgot-password:', error);
+        res.status(500).send({
+            status: "FAILED",
+            message: "Error al enviar código",
+            error: error.message
+        });
+    }
+});
+
+/**
+ * @route   POST /api/v1/auth/verify-reset-code
+ * @desc    Verificar código de recuperación
+ * @access  Public
+ */
+router.post('/verify-reset-code', async (req, res) => {
+    try {
+        const { code } = req.body;
+        const result = await authService.verifyResetCode(code);
+
+        if (!result.success) {
+            return res.status(400).send({
+                status: "FAILED",
+                message: result.message
+            });
+        }
+
+        res.status(200).send({
+            status: "OK",
+            message: "Código válido",
+            email: result.email
+        });
+    } catch (error) {
+        console.error('Error en verify-reset-code:', error);
+        res.status(500).send({
+            status: "FAILED",
+            message: "Error al verificar código",
+            error: error.message
+        });
+    }
+});
+
+
+router.post('/reset-password', async (req, res) => {
+    try {
+        const { token, newPassword } = req.body; // 👈 token, no resetToken ni code
+
+        if (!token || !newPassword) {
+            return res.status(400).send({
+                status: "FAILED",
+                message: "Faltan datos (token o nueva contraseña)"
+            });
+        }
+
+        const result = await authService.resetPassword(token, newPassword);
+        
+        if (result.success) {
+            res.status(200).send({
+                status: "OK",
+                message: "Contraseña actualizada exitosamente"
+            });
+        } else {
+            res.status(400).send({
+                status: "FAILED",
+                message: result.message
+            });
+        }
+    } catch (error) {
+        res.status(500).send({
+            status: "FAILED",
+            message: "Error al resetear la contraseña",
+            error: error.message
+        });
+    }
+});
+
+
 // Exportar el modulo
 module.exports = router;
