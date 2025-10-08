@@ -387,7 +387,7 @@ class AuthService {
   <div class="email-wrapper">
     <div class="header">
       <h1>Recuperación de Contraseña</h1>
-      <p style="font-size:14px; opacity:0.9;">Servicio Nacional de Aprendizaje (SENA)</p>
+      <p style="font-size:14px; opacity:0.9;">Sistema de Gestión de relacionamiento Corporativo</p>
     </div>
 
     <div class="content">
@@ -418,7 +418,7 @@ class AuthService {
 
             // ✅ Enviar correo
             await transporter.sendMail({
-                from: `"Sistema SENA" <${process.env.EMAIL_USER}>`,
+                from: `"SISREL" <${process.env.EMAIL_USER}>`,
                 to: user.emailUser,
                 subject: "Código de Recuperación de Contraseña",
                 html: htmlContent,
