@@ -632,7 +632,7 @@ class AuthService {
             // Buscar usuario con token válido y no expirado
             const user = await db.user.findOne({
                 where: {
-                    resetPasswordToken: token,
+                    verificationCode: token,  // ← Correcto
                     resetPasswordExpires: { [db.Sequelize.Op.gt]: new Date() },
                 },
             });
