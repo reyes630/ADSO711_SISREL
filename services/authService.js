@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const db = require('../models');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
+const sgMail = require("@sendgrid/mail");
 
 // Clave secreta para JWT (en producción debe estar en variables de entorno)
 const JWT_SECRET = process.env.JWT_SECRET || 'acad00f5b43383577b46398d23149b6d536c60494817d588e61f28d5f739e666c09d6e74f78cb21d7af6617beb62246d50babb2d84ba3b8d4690aa81b68d8503';
