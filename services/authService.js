@@ -623,64 +623,52 @@ class AuthService {
     /**
      * Restablecer contraseña con token de 6 dígitos
      */
-async resetPassword(token, newPassword) {
-    try {
-        console.log('Iniciando reseteo de contraseña...');
-        console.log('Token recibido:', token);
-        console.log('Tipo de token:', typeof token);
+    async resetPassword(token, newPassword) {
+        try {
+            console.log('Iniciando reseteo de contraseña...');
+            console.log('Token recibido:', token);
 
-        if (!token || !newPassword) {
-            console.log('Validación fallida: falta token o contraseña');
-            return { success: false, message: 'Token y contraseña son obligatorios' };
+            if (!token || !newPassword) {
+                return { success: false, message: 'Token y contraseña son obligatorios' };
+            }
+
+            console.log('Buscando usuario con resetPasswordToken:', token);
+
+            // 🔹 Buscar por resetPasswordToken (es el campo que existe en tu BD)
+            const user = await db.user.findOne({
+                where: {
+                    resetPasswordToken: token,
+                    resetPasswordExpires: { [db.Sequelize.Op.gt]: new Date() },
+                },
+            });
+
+            if (!user) {
+                console.log('Código inválido o expirado');
+                return { success: false, message: 'Código inválido o expirado' };
+            }
+
+            console.log('Usuario encontrado:', user.emailUser);
+
+            // 🔹 Hashear nueva contraseña
+            const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+            // 🔹 Actualizar usuario
+            await user.update({
+                passwordUser: hashedPassword,
+                resetPasswordToken: null,
+                resetPasswordExpires: null,
+                updatedAt: new Date(),
+            });
+
+            console.log('✅ Contraseña actualizada exitosamente');
+
+            return { success: true, message: 'Contraseña actualizada exitosamente' };
+
+        } catch (error) {
+            console.error('❌ Error al cambiar la contraseña:', error);
+            return { success: false, message: 'Error al cambiar la contraseña' };
         }
-
-        console.log('Buscando usuario con verificationCode:', token);
-
-        // 🔹 Buscar usuario con código válido y no expirado
-        const user = await db.user.findOne({
-            where: {
-                verificationCode: token.toString(),
-                resetPasswordExpires: { [db.Sequelize.Op.gt]: new Date() },
-            },
-        });
-
-        console.log('Usuario encontrado:', user ? 'Sí' : 'No');
-
-        if (!user) {
-            console.log('No se encontró usuario con código válido');
-            console.log('Código buscado:', token);
-            console.log('Fecha actual:', new Date());
-            return { success: false, message: 'Código inválido o expirado' };
-        }
-
-        console.log('Usuario encontrado:', user.emailUser);
-        console.log('Procediendo a hashear contraseña...');
-
-        // 🔹 Hashear nueva contraseña
-        const hashedPassword = await bcrypt.hash(newPassword, 10);
-        console.log('Contraseña hasheada exitosamente');
-
-        // 🔹 Actualizar usuario
-        console.log('Actualizando usuario...');
-        await user.update({
-            passwordUser: hashedPassword,
-            resetPasswordToken: null,
-            verificationCode: null,
-            resetPasswordExpires: null,
-            updatedAt: new Date(),
-        });
-
-        console.log('✅ Contraseña actualizada exitosamente para:', user.emailUser);
-
-        return { success: true, message: 'Contraseña actualizada exitosamente' };
-
-    } catch (error) {
-        console.error('❌ Error al cambiar la contraseña:', error);
-        console.error('Stack trace:', error.stack);
-        console.error('Mensaje completo:', error.message);
-        return { success: false, message: 'Error al cambiar la contraseña' };
     }
-}
 
 }
 
