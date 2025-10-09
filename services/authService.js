@@ -263,16 +263,14 @@ class AuthService {
             }
 
             // Generar código y token
-            const verificationCode = Math.floor(100000 + Math.random() * 900000);
+            const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
             const codeExpiration = new Date(Date.now() + 15 * 60 * 1000);
-            const resetToken = crypto.randomBytes(32).toString("hex");
 
             // Guardar en BD
-            await user.update({
-                resetPasswordToken: resetToken,
-                verificationCode: verificationCode.toString(),
-                resetPasswordExpires: codeExpiration,
-            });
+        await user.update({
+            resetPasswordToken: verificationCode, // Sin hashear
+            resetPasswordExpires: codeExpiration,
+        });
 
             // Plantilla de correo (idéntica a la tuya)
             const emailHTML = `
