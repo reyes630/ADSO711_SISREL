@@ -253,51 +253,20 @@ class AuthService {
 
     async forgotPassword(email) {
         try {
-            console.log('Iniciando recuperación de contraseña para:', email);
+            console.log("Iniciando recuperación de contraseña para:", email);
 
             const user = await db.user.findOne({ where: { emailUser: email } });
             if (!user) {
-                console.log('Usuario no encontrado:', email);
-                return { success: false, message: 'Usuario no encontrado' };
+                console.log("Usuario no encontrado:", email);
+                return { success: false, message: "Usuario no encontrado" };
             }
 
-            // Generar código de verificación y token
+            // Generar código y token
             const verificationCode = Math.floor(100000 + Math.random() * 900000);
             const codeExpiration = new Date(Date.now() + 15 * 60 * 1000);
-            const resetToken = crypto.randomBytes(32).toString('hex');
+            const resetToken = crypto.randomBytes(32).toString("hex");
 
-            console.log('Configurando transportador de correo...');
-
-            // 📧 Configurar transportador según el servicio
-            let transporter;
-
-            if (process.env.EMAIL_SERVICE === "sendgrid") {
-                console.log("📨 Usando SendGrid como servicio de correo...");
-                transporter = nodemailer.createTransport({
-                    host: "smtp.sendgrid.net",
-                    port: 587,
-                    auth: {
-                        user: "apikey", // literal
-                        pass: process.env.SENDGRID_API_KEY,
-                    },
-                });
-            } else {
-                console.log("📨 Usando Gmail como servicio de correo...");
-                transporter = nodemailer.createTransport({
-                    service: "gmail",
-                    auth: {
-                        user: process.env.EMAIL_USER,
-                        pass: process.env.EMAIL_PASS,
-                    },
-                });
-            }
-
-
-            console.log('Verificando conexión SMTP...');
-            await transporter.verify();
-            console.log('Conexión SMTP verificada exitosamente');
-
-            // Guardar token y código en la base de datos
+            // Guardar en BD
             await user.update({
                 resetPasswordToken: resetToken,
                 verificationCode: verificationCode.toString(),
@@ -305,7 +274,7 @@ class AuthService {
             });
 
             // Plantilla de correo (idéntica a la tuya)
-const emailHTML = `
+            const emailHTML = `
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -604,20 +573,46 @@ const emailHTML = `
 </html>
 `;
 
-            console.log('Enviando correo de recuperación...');
-            const info = await transporter.sendMail({
-                from: `"sisrel" <${process.env.EMAIL_FROM}>`,
-                to: user.emailUser,
-                subject: 'Recuperación de Contraseña - SISREL',
-                html: emailHTML,
-            });
+            // Envío condicional según entorno
+            if (process.env.EMAIL_SERVICE === "sendgrid") {
+                console.log("📨 Enviando correo con SendGrid API...");
 
+                sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+                const msg = {
+                    to: user.emailUser,
+                    from: {
+                        name: "SISREL",
+                        email: process.env.EMAIL_FROM,
+                    },
+                    subject: "Recuperación de Contraseña - SISREL",
+                    html: emailHTML,
+                };
 
-            console.log('✅ Correo enviado correctamente');
-            return { success: true, message: 'Correo de recuperación enviado exitosamente' };
+                await sgMail.send(msg);
+                console.log("✅ Correo enviado correctamente con SendGrid");
+            } else {
+                console.log("📨 Enviando correo con Gmail...");
+                const transporter = nodemailer.createTransport({
+                    service: "gmail",
+                    auth: {
+                        user: process.env.EMAIL_USER,
+                        pass: process.env.EMAIL_PASS,
+                    },
+                });
 
+                await transporter.sendMail({
+                    from: `"SISREL" <${process.env.EMAIL_FROM}>`,
+                    to: user.emailUser,
+                    subject: "Recuperación de Contraseña - SISREL",
+                    html: emailHTML,
+                });
+
+                console.log("✅ Correo enviado correctamente con Gmail");
+            }
+
+            return { success: true, message: "Correo de recuperación enviado exitosamente" };
         } catch (error) {
-            console.error('❌ Error en forgotPassword:', error);
+            console.error("❌ Error en forgotPassword:", error);
             throw new Error(`Error al enviar correo: ${error.message}`);
         }
     }
