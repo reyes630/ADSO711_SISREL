@@ -625,15 +625,15 @@ class AuthService {
      */
     async resetPassword(token, newPassword) {
         try {
-            if (!token) {
-                return { success: false, message: 'Token no proporcionado' };
+            if (!token || !newPassword) {
+                return { success: false, message: 'Token y contraseña son obligatorios' };
             }
 
-            // 🔹 Buscar usuario con token válido y no expirado
+            // Buscar usuario con token válido y no expirado
             const user = await db.user.findOne({
                 where: {
-                    resetPasswordToken: token, // <-- ya no se hashea
-                    resetPasswordExpires: { [db.Sequelize.Op.gt]: new Date() }, // aún válido
+                    resetPasswordToken: token,
+                    resetPasswordExpires: { [db.Sequelize.Op.gt]: new Date() },
                 },
             });
 
@@ -641,14 +641,15 @@ class AuthService {
                 return { success: false, message: 'Token inválido o expirado' };
             }
 
-            // 🔹 Hashear nueva contraseña
+            // Hashear nueva contraseña
             const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-            // 🔹 Actualizar usuario
+            // Actualizar usuario
             await user.update({
                 passwordUser: hashedPassword,
                 resetPasswordToken: null,
                 resetPasswordExpires: null,
+                updatedAt: new Date(),
             });
 
             return { success: true, message: 'Contraseña actualizada exitosamente' };
