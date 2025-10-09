@@ -252,237 +252,225 @@ class AuthService {
     }
 
 
+async forgotPassword(email) {
+    try {
+        console.log('Iniciando recuperación de contraseña para:', email);
+        
+        const user = await db.user.findOne({ where: { emailUser: email } });
+        if (!user) {
+            console.log('Usuario no encontrado:', email);
+            return { success: false };
+        }
 
-    // 📧 CONFIGURACIÓN DE NODEMAILER - Fragmento a actualizar
-    async forgotPassword(email) {
-        try {
-            const user = await db.user.findOne({ where: { emailUser: email } });
-            if (!user) return { success: false };
+        // Generar código de verificación de 6 dígitos
+        const verificationCode = Math.floor(100000 + Math.random() * 900000);
+        const codeExpiration = new Date(Date.now() + 15 * 60 * 1000); // 15 minutos
 
-            // ✅ Generar código de 6 dígitos
-            const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+        // Generar token adicional para seguridad
+        const resetToken = crypto.randomBytes(32).toString('hex');
 
-            // ✅ Expira en 15 minutos
-            const tokenExpiration = new Date(Date.now() + 15 * 60 * 1000);
+        console.log('Configurando transportador de correo...');
+        const transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false,
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
+            },
+            debug: true,
+            logger: true
+        });
 
-            // ✅ Guardar el código y la expiración en la BD
-            await user.update({
-                resetPasswordToken: resetCode,
-                resetPasswordExpires: tokenExpiration,
-            });
+        // Verificar conexión SMTP
+        console.log('Verificando conexión SMTP...');
+        await transporter.verify();
+        console.log('Conexión SMTP verificada exitosamente');
 
-            // ✅ CONFIGURACIÓN CORRECTA DE NODEMAILER
-            let transporter;
+        // Actualizar usuario con token y código
+        await user.update({
+            resetPasswordToken: resetToken,
+            verificationCode: verificationCode.toString(),
+            resetPasswordExpires: codeExpiration
+        });
 
-            if (process.env.EMAIL_SERVICE === 'gmail') {
-                // Configuración para Gmail - Usa puerto 465 para mejor compatibilidad en hosting
-                transporter = nodemailer.createTransport({
-                    host: 'smtp.gmail.com',
-                    port: 465,
-                    secure: true, // true para puerto 465
-                    auth: {
-                        user: process.env.EMAIL_USER,
-                        pass: process.env.EMAIL_PASS, // Contraseña de app, no la normal
-                    },
-                });
-            } else if (process.env.EMAIL_SERVICE === 'mailtrap') {
-                // Configuración para Mailtrap
-                transporter = nodemailer.createTransport({
-                    host: 'smtp.mailtrap.io',
-                    port: 465,
-                    secure: true,
-                    auth: {
-                        user: process.env.EMAIL_USER,
-                        pass: process.env.EMAIL_PASS,
-                    },
-                });
-            } else if (process.env.EMAIL_SERVICE === 'SendGrid') {
-                // Configuración para SendGrid
-                transporter = nodemailer.createTransport({
-                    host: 'smtp.sendgrid.net',
-                    port: 465,
-                    secure: true,
-                    auth: {
-                        user: 'apikey',
-                        pass: process.env.EMAIL_PASS,
-                    },
-                });
-            } else {
-                // Fallback: Gmail por defecto
-                transporter = nodemailer.createTransport({
-                    host: 'smtp.gmail.com',
-                    port: 465,
-                    secure: true,
-                    auth: {
-                        user: process.env.EMAIL_USER,
-                        pass: process.env.EMAIL_PASS,
-                    },
-                });
-            }
-
-            // ✅ Plantilla HTML elegante
-            const htmlContent = `
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Recuperación de Contraseña</title>
-  <style>
-    body {
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      margin: 0;
-      padding: 20px;
-    }
-
-    .email-wrapper {
-      max-width: 650px;
-      margin: 0 auto;
-      background: #ffffff;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    }
-
-    .header {
-      background: linear-gradient(135deg, #39A900 0%, #2d8000 100%);
-      color: #ffffff;
-      padding: 30px 20px;
-      text-align: center;
-      position: relative;
-    }
-
-    .header::before {
-      content: "";
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, #39A900, #66d932, #39A900);
-    }
-
-    .header h1 {
-      font-size: 22px;
-      font-weight: 600;
-      margin: 0;
-    }
-
-    .content {
-      padding: 35px 30px;
-      color: #333333;
-    }
-
-    .greeting {
-      font-size: 16px;
-      margin-bottom: 20px;
-      color: #2c3e50;
-    }
-
-    .reset-title {
-      background: linear-gradient(135deg, #39A900, #66d932);
-      color: white;
-      padding: 15px 20px;
-      border-radius: 8px;
-      font-size: 18px;
-      font-weight: 600;
-      text-align: center;
-      margin: 20px 0;
-      box-shadow: 0 4px 15px rgba(57, 169, 0, 0.2);
-    }
-
-    .code-box {
-      background: #f8fffe;
-      border: 2px dashed #39A900;
-      border-radius: 10px;
-      padding: 25px;
-      text-align: center;
-      font-size: 28px;
-      font-weight: bold;
-      color: #2d8000;
-      letter-spacing: 4px;
-      margin: 30px 0;
-    }
-
-    .footer {
-      background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-      color: #ecf0f1;
-      padding: 25px 20px;
-      text-align: center;
-      font-size: 13px;
-    }
-
-    .footer strong {
-      color: #39A900;
-    }
-
-    .note {
-      font-size: 14px;
-      color: #555;
-      text-align: center;
-      margin-top: 15px;
-    }
-  </style>
-</head>
-<body>
-  <div class="email-wrapper">
-    <div class="header">
-      <h1>Recuperación de Contraseña</h1>
-      <p style="font-size:14px; opacity:0.9;">Sistema de Gestión de relacionamiento Corporativo</p>
-    </div>
-
-    <div class="content">
-      <div class="greeting">
-        Estimado(a) <strong>${user.nameUser || "Usuario"}</strong>,
-      </div>
-
-      <p>Has solicitado recuperar el acceso a tu cuenta. Utiliza el siguiente código para restablecer tu contraseña:</p>
-
-      <div class="reset-title">🔐 Código de Verificación</div>
-
-      <div class="code-box">${resetCode}</div>
-
-      <p class="note">Este código expirará en <strong>15 minutos</strong>.</p>
-
-      <p class="note">Si no solicitaste este cambio, puedes ignorar este mensaje.</p>
-    </div>
-
-    <div class="footer">
-      <p>🤖 <strong>Mensaje Automático</strong></p>
-      <p>Este correo fue generado por el <strong>Sistema de Gestión SENA</strong>.</p>
-      <p style="margin-top: 10px; opacity: 0.8;">Por favor, no respondas a este correo.</p>
-    </div>
-  </div>
-</body>
-</html>
+        // HTML del email con estilo SENA
+        const emailHTML = `
+            <!DOCTYPE html>
+            <html lang="es">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <style>
+                    body {
+                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                        background-color: #f5f5f5;
+                        margin: 0;
+                        padding: 0;
+                    }
+                    .container {
+                        max-width: 600px;
+                        margin: 20px auto;
+                        background-color: #ffffff;
+                        border-radius: 8px;
+                        overflow: hidden;
+                        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                    }
+                    .header {
+                        background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+                        color: white;
+                        padding: 30px;
+                        text-align: center;
+                    }
+                    .header h1 {
+                        margin: 0;
+                        font-size: 28px;
+                        font-weight: bold;
+                    }
+                    .header p {
+                        margin: 5px 0 0 0;
+                        font-size: 14px;
+                        opacity: 0.95;
+                    }
+                    .content {
+                        padding: 30px;
+                        color: #333333;
+                    }
+                    .greeting {
+                        font-size: 16px;
+                        margin-bottom: 20px;
+                        font-weight: 500;
+                    }
+                    .message {
+                        font-size: 14px;
+                        line-height: 1.6;
+                        color: #555555;
+                        margin-bottom: 25px;
+                    }
+                    .code-section {
+                        background-color: #f8f9fa;
+                        border: 2px dashed #2ecc71;
+                        border-radius: 8px;
+                        padding: 20px;
+                        text-align: center;
+                        margin: 25px 0;
+                    }
+                    .code-label {
+                        font-size: 12px;
+                        color: #666666;
+                        text-transform: uppercase;
+                        letter-spacing: 1px;
+                        margin-bottom: 10px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 8px;
+                    }
+                    .code-label::before {
+                        content: "🔐";
+                        font-size: 16px;
+                    }
+                    .verification-code {
+                        font-size: 36px;
+                        font-weight: bold;
+                        color: #2ecc71;
+                        letter-spacing: 4px;
+                        font-family: 'Courier New', monospace;
+                    }
+                    .expiration {
+                        font-size: 12px;
+                        color: #e74c3c;
+                        margin-top: 10px;
+                        font-weight: 500;
+                    }
+                    .warning {
+                        font-size: 13px;
+                        color: #7f8c8d;
+                        margin-top: 30px;
+                        padding-top: 20px;
+                        border-top: 1px solid #ecf0f1;
+                    }
+                    .footer {
+                        background-color: #2c3e50;
+                        color: white;
+                        padding: 20px;
+                        text-align: center;
+                        font-size: 12px;
+                    }
+                    .footer-icon {
+                        margin-bottom: 8px;
+                        font-size: 14px;
+                    }
+                    .footer-title {
+                        color: #2ecc71;
+                        font-weight: bold;
+                        margin-bottom: 5px;
+                    }
+                    .footer-text {
+                        opacity: 0.85;
+                        line-height: 1.4;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>Recuperación de Contraseña</h1>
+                        <p>Sistema de Gestión SISREL</p>
+                    </div>
+                    
+                    <div class="content">
+                        <p class="greeting">Estimado(a) ${user.nameUser || 'Usuario'},</p>
+                        
+                        <p class="message">
+                            Has solicitado recuperar el acceso a tu cuenta. Utiliza el siguiente código para restablecer tu contraseña:
+                        </p>
+                        
+                        <div class="code-section">
+                            <div class="code-label">Código de Verificación</div>
+                            <div class="verification-code">${verificationCode}</div>
+                            <div class="expiration">Este código expirará en 15 minutos</div>
+                        </div>
+                        
+                        <p class="warning">
+                            Si no solicitaste este cambio, puedes ignorar este mensaje. Tu cuenta permanecerá segura.
+                        </p>
+                    </div>
+                    
+                    <div class="footer">
+                        <div class="footer-icon">📧 Mensaje Automático</div>
+                        <div class="footer-title">Este correo fue generado por el Sistema de Gestión SISREL</div>
+                        <div class="footer-text">
+                            Por favor, no respondas a este correo.<br>
+                            Si tienes problemas, contacta al administrador.
+                        </div>
+                    </div>
+                </div>
+            </body>
+            </html>
         `;
 
-            // ✅ Enviar correo con manejo de errores
-            try {
-                await transporter.sendMail({
-                    from: `"SISREL" <${process.env.EMAIL_USER}>`,
-                    to: user.emailUser,
-                    subject: "Código de Recuperación de Contraseña",
-                    html: htmlContent,
-                });
-                console.log('✅ Correo enviado a:', user.emailUser);
-            } catch (emailError) {
-                console.error('❌ Error al enviar correo:', emailError);
-                // Limpiar el token si no se pudo enviar el correo
-                await user.update({
-                    resetPasswordToken: null,
-                    resetPasswordExpires: null,
-                });
-                throw new Error(`No se pudo enviar el correo: ${emailError.message}`);
-            }
+        console.log('Enviando correo...');
+        const info = await transporter.sendMail({
+            from: `"SISREL Support" <${process.env.EMAIL_USER}>`,
+            to: user.emailUser,
+            subject: 'Recuperación de Contraseña - SISREL',
+            html: emailHTML
+        });
 
-            return { success: true };
-        } catch (error) {
-            console.error("❌ Error en forgotPassword:", error);
-            throw error;
+        console.log('Correo enviado exitosamente:', info.messageId);
+        return { 
+            success: true, 
+            message: 'Correo de recuperación enviado exitosamente'
+        };
+    } catch (error) {
+        console.error('Error detallado en forgotPassword:', error);
+        if (error.code === 'EAUTH') {
+            console.error('Error de autenticación con Gmail. Verifica las credenciales.');
         }
+        throw new Error(`Error al enviar correo: ${error.message}`);
     }
+}
 
 
     /**
