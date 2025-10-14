@@ -30,7 +30,7 @@
     "username": "miguelj24",
     "password": "e67ecdd77cc428bbd6c2",
     "database": "sisrel",
-    "host": "sena_sisrel-prod-postgress",
+    "host": "sena_sisrel-prod-postgres",
     "dialect": "postgres",
     "dialecOptions": {
       "ssl": {
