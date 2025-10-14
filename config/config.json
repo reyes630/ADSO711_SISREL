@@ -25,5 +25,18 @@
         "rejectUnauthorized": false
       }   
     }
+  },
+  "production_vps": {
+    "username": "miguelj24",
+    "password": "e67ecdd77cc428bbd6c2",
+    "database": "sisrel",
+    "host": "sena_sisrel-prod-postgress",
+    "dialect": "postgres",
+    "dialecOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false
+      }   
+    }
   }
 }
