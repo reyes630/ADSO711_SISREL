@@ -5,7 +5,6 @@ const sgMail = require("@sendgrid/mail");
 class NotificationService {
     async notifyCoordinators(requestData) {
         try {
-            // Buscar todos los coordinadores
             const coordinators = await db.user.findAll({
                 where: { coordinator: true },
                 attributes: ['emailUser', 'nameUser']
@@ -16,11 +15,9 @@ class NotificationService {
                 return;
             }
 
-            // Crear el HTML del correo
-            const emailHTML = this.createRequestNotificationEmail(requestData);
-
-            // Enviar correo a cada coordinador
             for (const coordinator of coordinators) {
+                // Crear el HTML del correo con el nombre del coordinador
+                const emailHTML = this.createRequestNotificationEmail(requestData, coordinator.nameUser);
                 await this.sendEmail(coordinator.emailUser, emailHTML);
             }
 
@@ -31,7 +28,7 @@ class NotificationService {
         }
     }
 
-    createRequestNotificationEmail(requestData) {
+    createRequestNotificationEmail(requestData, coordinatorName) {  // 👈 Añadir parámetro
         return `
 <!DOCTYPE html>
 <html lang="es">
@@ -271,7 +268,7 @@ class NotificationService {
 
     <!-- Greeting -->
     <div class="greeting">
-      <p>Estimado(a) <strong>${requestData.user?.nameUser || 'Usuario'}</strong>,</p>
+      <p>Estimado(a) <strong>${coordinatorName}</strong>,</p>
       <p style="margin-top: 12px;">Le informamos que se ha registrado una nueva solicitud en el sistema que requiere su atención.</p>
     </div>
 
@@ -309,11 +306,7 @@ class NotificationService {
 
     <!-- CTA Section -->
     <div class="cta-section">
-      <h3>📋 Ver Detalles Completos</h3>
       <p>Para consultar toda la información de esta solicitud, incluyendo descripción detallada, ubicación, fechas del evento y gestionar su atención, acceda a nuestro sistema.</p>
-      <a href="${process.env.FRONTEND_URL || 'https://sistema.sena.edu.co'}" class="cta-button">
-        Ir al Sistema SISREL
-      </a>
     </div>
 
     <!-- Footer -->
