@@ -1,4 +1,5 @@
 const db = require('../models');
+const notificationService = require('./notificationService');
 
 const getAllrequest = async () => {
   try {
@@ -88,6 +89,28 @@ const createrequest = async (eventDate, location, municipality, observations, co
             FKservicetypes,
             archive_status
         });
+
+        // Obtener la solicitud con sus relaciones para la notificación
+        const requestWithRelations = await db.request.findByPk(newrequest.id, {
+            include: [
+                {
+                    model: db.Client,
+                    attributes: ['id', 'NameClient']
+                },
+                {
+                    model: db.State,
+                    attributes: ['id', 'State']
+                },
+                {
+                    model: db.serviceType,
+                    attributes: ['id', 'serviceType']
+                }
+            ]
+        });
+
+        // Enviar notificación a coordinadores
+        await notificationService.notifyCoordinators(requestWithRelations);
+
         return newrequest;
     } catch (error) {
         throw new Error(`Error al crear la solicitud: ${error.message}`);
