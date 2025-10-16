@@ -70,10 +70,14 @@ class NotificationService {
             <h2>Detalles de la Solicitud:</h2>
             <div class="request-details">
               <p><strong>ID de Solicitud:</strong> ${requestData.id}</p>
-              <p><strong>Cliente:</strong> ${requestData.client?.nameClient || 'No especificado'}</p>
-              <p><strong>Tipo de Servicio:</strong> ${requestData.serviceType?.nameServiceType || 'No especificado'}</p>
-              <p><strong>Estado:</strong> ${requestData.state?.nameState || 'Pendiente'}</p>
-              <p><strong>Fecha de Solicitud:</strong> ${new Date(requestData.createdAt).toLocaleDateString()}</p>
+              <p><strong>Cliente:</strong> ${requestData.Client?.NameClient || 'No especificado'}</p>
+              <p><strong>Tipo de Servicio:</strong> ${requestData.serviceType?.serviceType || 'No especificado'}</p>
+              <p><strong>Estado:</strong> ${requestData.State?.State || 'Pendiente'}</p>
+              <p><strong>Fecha del Evento:</strong> ${requestData.eventDate || 'No especificado'}</p>
+              <p><strong>Ubicación:</strong> ${requestData.location || 'No especificado'}</p>
+              <p><strong>Municipio:</strong> ${requestData.municipality || 'No especificado'}</p>
+              <p><strong>Descripción de la necesidad:</strong> ${requestData.needDescription || 'No especificado'}</p>
+              <p><strong>Fecha de Creación:</strong> ${new Date(requestData.createdAt).toLocaleDateString()}</p>
             </div>
             <p>Por favor, revise esta solicitud en el sistema SISREL.</p>
           </div>
