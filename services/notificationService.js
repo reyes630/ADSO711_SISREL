@@ -137,20 +137,6 @@ class NotificationService {
       font-weight: 600;
       position: relative;
       z-index: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-    .icon-check {
-      width: 28px;
-      height: 28px;
-      background: white;
-      border-radius: 50%;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
     }
     .summary-container {
       margin: 25px 35px;
@@ -285,16 +271,13 @@ class NotificationService {
 
     <!-- Greeting -->
     <div class="greeting">
-      <p>Estimado(a) <strong>Miguel</strong>,</p>
-      <p style="margin-top: 12px;">¡Excelente noticia! Su solicitud ha sido creada exitosamente en nuestro sistema.</p>
+      <p>Estimado(a) <strong>${requestData.user?.nameUser || 'Usuario'}</strong>,</p>
+      <p style="margin-top: 12px;">Le informamos que se ha registrado una nueva solicitud en el sistema que requiere su atención.</p>
     </div>
 
     <!-- Status Box -->
     <div class="status-box">
-      <h2>
-        <span class="icon-check">✓</span>
-        Solicitud Registrada Exitosamente
-      </h2>
+      <h2>Nueva Solicitud Recibida</h2>
     </div>
 
     <!-- Summary Container -->
@@ -326,14 +309,17 @@ class NotificationService {
 
     <!-- CTA Section -->
     <div class="cta-section">
-      <h3>Revisar Solicitud en el Sistema</h3>
-      <p>Para consultar toda la información de su solicitud, incluyendo descripción detallada, ubicación, fechas del evento y realizar seguimiento en tiempo real, acceda a nuestro sistema.</p>
+      <h3>📋 Ver Detalles Completos</h3>
+      <p>Para consultar toda la información de esta solicitud, incluyendo descripción detallada, ubicación, fechas del evento y gestionar su atención, acceda a nuestro sistema.</p>
+      <a href="${process.env.FRONTEND_URL || 'https://sistema.sena.edu.co'}" class="cta-button">
+        Ir al Sistema SISREL
+      </a>
     </div>
 
     <!-- Footer -->
     <div class="footer">
-      <p><strong>Nota:</strong> Recibirá notificaciones sobre cualquier actualización en su solicitud.</p>
-      <p>Si tiene alguna consulta, puede contactar a su gestor asignado.</p>
+      <p><strong>Nota:</strong> Esta solicitud ha sido asignada a su gestión y requiere seguimiento.</p>
+      <p>Revise los detalles completos en el sistema para comenzar con la atención correspondiente.</p>
       <p class="footer-note">Este es un correo automático, por favor no responda directamente a este mensaje.</p>
     </div>
   </div>
