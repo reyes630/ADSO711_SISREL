@@ -42,161 +42,234 @@ class NotificationService {
     body {
       margin: 0;
       padding: 20px;
-      font-family: Arial, sans-serif;
-      background-color: #f5f5f5;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e8f0e8 100%);
     }
     .email-container {
       max-width: 600px;
       margin: 0 auto;
       background-color: white;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
     }
     .header {
-      background: linear-gradient(135deg, #2d8d0f 0%, #39A900 100%);
+      background: linear-gradient(135deg, #2d8d0f 0%, #39A900 50%, #45c018 100%);
       color: white;
-      padding: 30px 20px;
+      padding: 40px 30px;
       text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      animation: pulse 8s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.5; }
+      50% { transform: scale(1.1); opacity: 0.3; }
+    }
+    .header-content {
+      position: relative;
+      z-index: 1;
     }
     .header h1 {
       margin: 0;
-      font-size: 18px;
-      font-weight: bold;
+      font-size: 20px;
+      font-weight: 700;
       letter-spacing: 0.5px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
     .header p {
-      margin: 8px 0 0 0;
-      font-size: 13px;
+      margin: 10px 0 0 0;
+      font-size: 14px;
       opacity: 0.95;
+      font-weight: 300;
     }
     .greeting {
-      padding: 20px 25px 10px 25px;
-      color: #333;
+      padding: 35px 35px 20px 35px;
+      color: #2c3e50;
     }
     .greeting p {
       margin: 0;
-      font-size: 14px;
-      line-height: 1.6;
+      font-size: 15px;
+      line-height: 1.7;
+      color: #555;
+    }
+    .greeting strong {
+      color: #39A900;
+      font-weight: 600;
     }
     .status-box {
-      margin: 20px 25px;
-      background: #39A900;
-      border-radius: 8px;
-      padding: 18px;
+      margin: 25px 35px;
+      background: linear-gradient(135deg, #39A900 0%, #2d8d0f 100%);
+      border-radius: 16px;
+      padding: 24px;
       text-align: center;
+      box-shadow: 0 8px 20px rgba(57, 169, 0, 0.25);
+      position: relative;
+      overflow: hidden;
+    }
+    .status-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+      animation: shimmer 3s infinite;
+    }
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
     }
     .status-box h2 {
       margin: 0;
       color: white;
-      font-size: 16px;
+      font-size: 18px;
       font-weight: 600;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
-    .details-container {
-      margin: 20px 25px;
-      border: 2px solid #e8e8e8;
-      border-radius: 8px;
-      padding: 20px;
-      background: #fafff7;
+    .icon-check {
+      width: 28px;
+      height: 28px;
+      background: white;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
     }
-    .detail-row {
-      margin-bottom: 15px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid #e8e8e8;
+    .summary-container {
+      margin: 25px 35px;
+      border-radius: 20px;
+      padding: 0;
+      background: linear-gradient(135deg, #f8fff5 0%, #ffffff 100%);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
     }
-    .detail-row:last-child {
-      margin-bottom: 0;
-      padding-bottom: 0;
+    .summary-row {
+      padding: 20px 24px;
+      border-bottom: 1px solid #f0f0f0;
+      transition: background 0.3s ease;
+    }
+    .summary-row:hover {
+      background: rgba(57, 169, 0, 0.03);
+    }
+    .summary-row:last-child {
       border-bottom: none;
     }
-    .detail-label {
+    .summary-label {
       display: block;
       font-size: 12px;
-      color: #666;
-      margin-bottom: 4px;
+      color: #888;
+      margin-bottom: 6px;
       font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
-    .detail-value {
+    .summary-value {
       display: block;
-      font-size: 14px;
-      color: #333;
+      font-size: 15px;
+      color: #2c3e50;
+      font-weight: 500;
     }
     .status-badges {
       display: flex;
       gap: 10px;
-      margin-top: 15px;
+      margin-top: 8px;
       flex-wrap: wrap;
     }
     .badge {
       display: inline-block;
-      padding: 6px 16px;
+      padding: 8px 18px;
       border-radius: 20px;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 600;
-    }
-    .badge-previous {
-      background-color: #808080;
-      color: white;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
     .badge-current {
-      background-color: #39A900;
+      background: linear-gradient(135deg, #39A900 0%, #2d8d0f 100%);
       color: white;
     }
-    .description-box {
-      background: white;
-      padding: 15px;
-      border-radius: 6px;
-      margin-top: 8px;
-      border: 1px solid #e0e0e0;
-      min-height: 60px;
-    }
-    .description-text {
-      font-size: 13px;
-      color: #555;
-      line-height: 1.5;
-      margin: 0;
-    }
-    .info-section {
-      background-color: #f0f7ff;
-      border-left: 4px solid #2196F3;
-      padding: 15px 20px;
-      margin: 20px 25px;
-      border-radius: 4px;
-    }
-    .info-section h3 {
-      margin: 0 0 8px 0;
-      font-size: 14px;
-      color: #1976D2;
-    }
-    .info-section p {
-      margin: 0;
-      font-size: 13px;
-      color: #555;
-      line-height: 1.5;
-    }
-    .footer {
-      background-color: #2c3e50;
-      color: white;
-      padding: 20px;
+    .cta-section {
+      background: linear-gradient(135deg, #e8f4ff 0%, #f0f8ff 100%);
+      border-left: 5px solid #2196F3;
+      padding: 25px 30px;
+      margin: 25px 35px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(33, 150, 243, 0.1);
       text-align: center;
-      margin-top: 30px;
     }
-    .footer p {
-      margin: 5px 0;
-      font-size: 12px;
+    .cta-section h3 {
+      margin: 0 0 15px 0;
+      font-size: 16px;
+      color: #1976D2;
+      font-weight: 700;
+    }
+    .cta-section p {
+      margin: 0 0 20px 0;
+      font-size: 14px;
+      color: #555;
       line-height: 1.6;
     }
-    .footer-note {
-      font-size: 11px;
-      opacity: 0.8;
-      margin-top: 15px;
-    }
-    .action-message {
-      background-color: #39A900;
+    .cta-button {
+      display: inline-block;
+      background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
       color: white;
-      padding: 15px 20px;
-      margin: 20px 25px;
-      border-radius: 6px;
+      padding: 14px 32px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      box-shadow: 0 6px 20px rgba(33, 150, 243, 0.3);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .cta-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(33, 150, 243, 0.4);
+    }
+    .footer {
+      background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+      color: white;
+      padding: 30px;
       text-align: center;
+      margin-top: 40px;
+      border-radius: 0 0 24px 24px;
+    }
+    .footer p {
+      margin: 8px 0;
       font-size: 13px;
-      font-weight: 500;
+      line-height: 1.7;
+      opacity: 0.95;
+    }
+    .footer strong {
+      color: #39A900;
+    }
+    .footer-note {
+      font-size: 12px;
+      opacity: 0.7;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .divider {
+      height: 2px;
+      background: linear-gradient(90deg, transparent 0%, #39A900 50%, transparent 100%);
+      margin: 30px 35px;
+      border-radius: 2px;
     }
   </style>
 </head>
@@ -204,84 +277,64 @@ class NotificationService {
   <div class="email-container">
     <!-- Header -->
     <div class="header">
-      <h1>SISTEMA DE GESTIÓN DE RELACIONAMIENTO CORPORATIVO</h1>
-      <p>Servicio Nacional de Aprendizaje</p>
+      <div class="header-content">
+        <h1>SISTEMA DE GESTIÓN DE RELACIONAMIENTO CORPORATIVO</h1>
+        <p>Servicio Nacional de Aprendizaje</p>
+      </div>
     </div>
 
     <!-- Greeting -->
     <div class="greeting">
       <p>Estimado(a) <strong>Miguel</strong>,</p>
-      <p style="margin-top: 10px;">Nos complace informarle que su solicitud ha sido creada exitosamente en el sistema. A continuación, encontrará los detalles de su solicitud:</p>
+      <p style="margin-top: 12px;">¡Excelente noticia! Su solicitud ha sido creada exitosamente en nuestro sistema.</p>
     </div>
 
     <!-- Status Box -->
     <div class="status-box">
-      <h2>✓ Nueva Solicitud Creada</h2>
+      <h2>
+        <span class="icon-check">✓</span>
+        Solicitud Registrada Exitosamente
+      </h2>
     </div>
 
-    <!-- Details Container -->
-    <div class="details-container">
-      <div class="detail-row">
-        <span class="detail-label">Cliente:</span>
-        <span class="detail-value">${requestData.Client?.NameClient || 'No especificado'}</span>
+    <!-- Summary Container -->
+    <div class="summary-container">
+      <div class="summary-row">
+        <span class="summary-label">Cliente</span>
+        <span class="summary-value">${requestData.Client?.NameClient || 'No especificado'}</span>
       </div>
 
-      <div class="detail-row">
-        <span class="detail-label">Tipo de Servicio:</span>
-        <span class="detail-value">${requestData.serviceType?.serviceType || 'No especificado'}</span>
+      <div class="summary-row">
+        <span class="summary-label">Tipo de Servicio</span>
+        <span class="summary-value">${requestData.serviceType?.serviceType || 'No especificado'}</span>
       </div>
 
-      <div class="detail-row">
-        <span class="detail-label">Estado:</span>
+      <div class="summary-row">
+        <span class="summary-label">Estado Actual</span>
         <div class="status-badges">
           <span class="badge badge-current">${requestData.State?.State || 'Pendiente'}</span>
         </div>
       </div>
 
-      <div class="detail-row">
-        <span class="detail-label">Fecha del Evento:</span>
-        <span class="detail-value">${requestData.eventDate || 'No especificado'}</span>
-      </div>
-
-      <div class="detail-row">
-        <span class="detail-label">Ubicación:</span>
-        <span class="detail-value">${requestData.location || 'No especificado'}</span>
-      </div>
-
-      <div class="detail-row">
-        <span class="detail-label">Municipio:</span>
-        <span class="detail-value">${requestData.municipality || 'No especificado'}</span>
-      </div>
-
-      <div class="detail-row">
-        <span class="detail-label">Fecha de Creación:</span>
-        <span class="detail-value">${new Date(requestData.createdAt).toLocaleDateString()}</span>
-      </div>
-
-      <div class="detail-row">
-        <span class="detail-label">Descripción de la necesidad:</span>
-        <div class="description-box">
-          <p class="description-text">${requestData.needDescription || 'No especificado'}</p>
-        </div>
+      <div class="summary-row">
+        <span class="summary-label">Fecha de Creación</span>
+        <span class="summary-value">${new Date(requestData.createdAt).toLocaleDateString()}</span>
       </div>
     </div>
 
-    <!-- Action Message -->
-    <div class="action-message">
-      Su solicitud ha sido registrada correctamente. En breve recibirá actualizaciones sobre el estado de su solicitud.
-    </div>
+    <div class="divider"></div>
 
-    <!-- Info Section -->
-    <div class="info-section">
-      <h3>¿Necesita más información?</h3>
-      <p>Acceda al sistema para consultar el historial completo y realizar el seguimiento correspondiente.</p>
+    <!-- CTA Section -->
+    <div class="cta-section">
+      <h3>Revisar Solicitud en el Sistema</h3>
+      <p>Para consultar toda la información de su solicitud, incluyendo descripción detallada, ubicación, fechas del evento y realizar seguimiento en tiempo real, acceda a nuestro sistema.</p>
     </div>
 
     <!-- Footer -->
     <div class="footer">
-      <p><strong>Nota:</strong> Esta solicitud ha sido registrada automáticamente en el sistema.</p>
-      <p>Si tiene alguna consulta adicional, puede contactar a su gestor asignado.</p>
-      <p class="footer-note">Por favor, no responda directamente a este correo electrónico.</p>
+      <p><strong>Nota:</strong> Recibirá notificaciones sobre cualquier actualización en su solicitud.</p>
+      <p>Si tiene alguna consulta, puede contactar a su gestor asignado.</p>
+      <p class="footer-note">Este es un correo automático, por favor no responda directamente a este mensaje.</p>
     </div>
   </div>
 </body>
